@@ -12,7 +12,7 @@ export default function AmountPreset({ value, onChange }: Props) {
 
   return (
     <div>
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-1.5">
         {(PRESETS as readonly number[]).map((p) => {
           const active = numeric === p && value.trim() !== '';
           return (
@@ -20,31 +20,29 @@ export default function AmountPreset({ value, onChange }: Props) {
               key={p}
               type="button"
               onClick={() => onChange(String(p))}
-              className={`rounded-full px-3.5 py-1.5 text-[13px] font-semibold transition active:scale-95 ${
+              className={`rounded-md px-3 py-1.5 font-mono text-[12px] font-semibold transition active:scale-95 ${
                 active
-                  ? 'bg-forest text-white shadow-md shadow-forest/30'
-                  : 'border border-ink/10 bg-white text-stone-600 hover:border-forest/40 hover:text-forest'
+                  ? 'bg-gold text-night shadow-md shadow-gold/20'
+                  : 'border border-white/10 bg-white/5 text-faint hover:border-gold/50 hover:text-gold'
               }`}
             >
-              ₹{formatINR(p)}/-
+              {formatINR(p)}
             </button>
           );
         })}
         <button
           type="button"
           onClick={() => onChange('')}
-          className={`rounded-full px-3.5 py-1.5 text-[13px] font-semibold transition active:scale-95 ${
+          className={`rounded-md px-3 py-1.5 font-mono text-[12px] font-semibold transition active:scale-95 ${
             isCustom || value.trim() === ''
-              ? 'bg-ink text-white shadow-md'
-              : 'border border-ink/10 bg-white text-stone-600 hover:border-ink/25'
+              ? 'bg-mist text-night shadow-md'
+              : 'border border-white/10 bg-white/5 text-faint hover:border-white/25'
           }`}
         >
-          Custom
+          custom
         </button>
       </div>
-      <p className="mt-2 text-[12px] leading-relaxed text-stone-400">
-        Convenience options only — not official limits.
-      </p>
+      <p className="mt-1.5 font-mono text-[10.5px] text-faint/70">presets = convenience only</p>
     </div>
   );
 }
