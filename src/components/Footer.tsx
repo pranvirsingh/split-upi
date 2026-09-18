@@ -11,7 +11,10 @@ export default function Footer() {
           <span className="flex items-center gap-1.5">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" /> on-device
           </span>
-          <span className="ml-auto">qr/deep-link generator only</span>
+          <span className="ml-auto flex items-center gap-3">
+            <a href="/privacy.html" className="underline decoration-gold/50 underline-offset-2 hover:text-mist">privacy</a>
+            <span>qr/deep-link generator only</span>
+          </span>
         </div>
         <div className="grid gap-px border-t border-white/10 bg-white/10 font-mono text-[11.5px] sm:grid-cols-3">
           <details className="console-details bg-night px-4 py-2.5">

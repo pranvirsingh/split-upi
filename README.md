@@ -39,6 +39,15 @@ npm run test:logic # spec regression script
 
 Covers all required cases from the spec (splitting, rounding, validation, URI generation).
 
+## Mobile (Android)
+
+Same web code, wrapped with Capacitor (`app.splitupi`).
+
+- App shows the generator only — no marketing sections.
+- QR PNGs save/share through the native system sheet.
+- Debug APK is built in CI on every version tag and attached to the GitHub Release.
+- Privacy policy: `/privacy.html` (linked in-app, needed for Play Store later).
+
 ## CI/CD
 
 - **CI (GitHub Actions):** every push to `main` and every pull request runs `npm ci` → `npm run test:logic` → `npm run build`. See `.github/workflows/ci.yml`.

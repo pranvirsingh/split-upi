@@ -8,6 +8,7 @@ import { validateInputs, type PaymentInputs, type ValidationResult } from './lib
 import { buildUpiUri } from './lib/upi';
 import { qrDataUrl } from './lib/download';
 import { formatINR } from './lib/format';
+import { isNative } from './lib/native';
 
 function Dots() {
   return (
@@ -75,6 +76,8 @@ export default function App() {
     <div id="top" className="min-h-screen bg-night text-mist">
       <Header onGenerate={scrollToForm} />
 
+      {!isNative() && (
+      <>
       {/* MASTHEAD */}
       <section className="hero-grid no-print border-b border-white/10">
         <div className="mx-auto max-w-6xl px-4 pb-10 pt-12 sm:px-6 sm:pt-14">
@@ -117,6 +120,8 @@ export default function App() {
           </div>
         </div>
       </section>
+      </>
+      )}
 
       {/* CONSOLE */}
       <main id="generator" className="no-print mx-auto max-w-6xl scroll-mt-20 px-4 pt-8 sm:px-6">
@@ -157,6 +162,7 @@ export default function App() {
         </div>
 
         {/* STEPS */}
+        {!isNative() && (
         <section className="mt-6 grid gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 sm:grid-cols-3">
           {[
             ['01', 'enter', 'upi id · name · total'],
@@ -171,6 +177,7 @@ export default function App() {
             </div>
           ))}
         </section>
+        )}
       </main>
 
       <Footer />
