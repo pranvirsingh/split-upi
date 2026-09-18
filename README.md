@@ -2,6 +2,8 @@
 
 Generate ready-to-pay UPI QR codes in seconds. No signup required.
 
+**Live:** https://split-upi-ochre.vercel.app/
+
 ## Run locally
 
 ```bash
