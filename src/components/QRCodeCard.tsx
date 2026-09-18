@@ -31,46 +31,39 @@ export default function QRCodeCard({ index, total, amount, upiId, receiverName, 
   };
 
   return (
-    <div className="lift relative flex flex-col overflow-hidden rounded-2xl border border-ink/10 bg-white shadow-[0_12px_36px_-16px_rgba(28,24,19,.25)]">
-      <div className="flex items-center justify-between bg-gradient-to-r from-forest/10 via-goldsoft to-transparent px-5 py-3">
-        <p className="text-[13px] font-bold uppercase tracking-wide text-forest">
-          Payment {index + 1} of {total}
+    <div className="lift relative flex flex-col overflow-hidden rounded-xl border border-white/10 bg-night">
+      <div className="flex items-center justify-between border-b border-white/10 px-4 py-2">
+        <p className="font-mono text-[11px] font-bold text-gold">
+          pkt_{index + 1}/{total}
         </p>
-        <span className="rounded-full bg-white px-2.5 py-1 text-[12px] font-extrabold text-ink shadow-sm ring-1 ring-ink/10">
-          ₹{formatINR(amount)}/-
-        </span>
+        <span className="font-mono text-[12px] font-bold text-mist">₹{formatINR(amount)}</span>
       </div>
 
-      <div className="flex flex-col items-center px-5 pb-5 pt-4">
-        <div className="grid w-full max-w-[280px] place-items-center rounded-2xl border border-ink/10 bg-white p-4 shadow-inner">
+      <div className="flex flex-col items-center px-4 pb-4 pt-3">
+        <div className="grid w-full max-w-[240px] place-items-center rounded-lg bg-white p-3">
           {qr ? (
-            <img src={qr} alt={`UPI QR for payment ${index + 1}`} className="qr-img h-52 w-52" width={208} height={208} />
+            <img src={qr} alt={`UPI QR for payment ${index + 1}`} className="qr-img h-48 w-48" width={192} height={192} />
           ) : (
-            <div className="grid h-52 w-52 animate-pulse place-items-center rounded-xl bg-paper text-[13px] font-medium text-stone-400">
-              Generating QR…
+            <div className="grid h-48 w-48 animate-pulse place-items-center rounded bg-stone-100 font-mono text-[12px] text-stone-400">
+              rendering…
             </div>
           )}
         </div>
 
-        <p className="mt-4 text-[22px] font-extrabold tracking-tight text-ink">₹{formatINR(amount)}/-</p>
-        <p className="mt-0.5 max-w-full truncate text-[13.5px] font-medium text-stone-500" title={upiId}>
+        <p className="mt-3 font-mono text-[19px] font-bold tracking-tight text-mist">₹{formatINR(amount)}</p>
+        <p className="mt-0.5 max-w-full truncate font-mono text-[11.5px] text-faint" title={upiId}>
           {upiId}
         </p>
-        {note.trim() && (
-          <p className="mt-1 max-w-full truncate text-[12.5px] text-stone-400" title={note}>
-            {note}
-          </p>
-        )}
 
-        <div className="mt-4 grid w-full grid-cols-2 gap-2">
+        <div className="mt-3 grid w-full grid-cols-3 gap-1.5">
           <button
             onClick={async () => {
               await downloadBrandedQr({ index, total, amount, upiId, receiverName, note, uri });
-              flash('PNG downloaded');
+              flash('saved');
             }}
-            className="rounded-xl bg-forest px-3 py-2.5 text-[13px] font-bold text-white transition hover:bg-pine active:scale-95"
+            className="rounded-md bg-gold px-2 py-2 font-mono text-[11.5px] font-bold text-night transition hover:brightness-110 active:scale-95"
           >
-            Download PNG
+            png
           </button>
           <button
             onClick={async () => {
@@ -78,33 +71,31 @@ export default function QRCodeCard({ index, total, amount, upiId, receiverName, 
                 `SplitUPI Payment ${index + 1} of ${total}`,
                 `Pay ₹${formatINR(amount)} to ${receiverName} (${upiId}): ${uri}`,
               );
-              flash(r === 'shared' ? 'Shared' : r === 'copied' ? 'Summary copied' : 'Share not supported');
+              flash(r === 'shared' ? 'shared' : r === 'copied' ? 'copied' : 'n/a');
             }}
-            className="rounded-xl border border-ink/10 bg-white px-3 py-2.5 text-[13px] font-bold text-stone-700 transition hover:border-forest/40 hover:text-forest active:scale-95"
+            className="rounded-md border border-white/10 bg-white/5 px-2 py-2 font-mono text-[11.5px] font-bold text-mist transition hover:border-gold/50 hover:text-gold active:scale-95"
           >
-            Share
+            share
           </button>
-        </div>
-        <div className="mt-2 grid w-full grid-cols-2 gap-2">
           <button
             onClick={async () => {
               const ok = await copyText(uri);
-              flash(ok ? 'UPI link copied' : 'Copy failed');
+              flash(ok ? 'copied' : 'failed');
             }}
-            className="rounded-xl border border-ink/10 bg-paper px-3 py-2.5 text-[13px] font-semibold text-stone-600 transition hover:border-forest/40 hover:text-forest active:scale-95"
+            className="rounded-md border border-white/10 bg-white/5 px-2 py-2 font-mono text-[11.5px] font-bold text-mist transition hover:border-gold/50 hover:text-gold active:scale-95"
           >
-            Copy UPI Link
+            copy
           </button>
-          <a
-            href={uri}
-            className="grid place-items-center rounded-xl border border-forest/25 bg-[#edf3ee] px-3 py-2.5 text-center text-[13px] font-bold text-forest transition hover:bg-[#dfe9e0] active:scale-95"
-          >
-            Open in UPI app
-          </a>
         </div>
+        <a
+          href={uri}
+          className="mt-1.5 w-full rounded-md border border-moss/60 bg-moss/20 px-2 py-2 text-center font-mono text-[11.5px] font-bold text-emerald-300 transition hover:bg-moss/30 active:scale-95"
+        >
+          open in upi app ↗
+        </a>
 
         {toast && (
-          <div className="pointer-events-none absolute bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-ink px-3.5 py-1.5 text-[12.5px] font-semibold text-white shadow-xl">
+          <div className="pointer-events-none absolute bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-mist px-3.5 py-1.5 font-mono text-[12px] font-bold text-night shadow-xl">
             {toast}
           </div>
         )}

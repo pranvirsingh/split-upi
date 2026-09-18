@@ -1,46 +1,38 @@
-import Disclaimer from './Disclaimer';
+import { DISCLAIMER_TEXT } from '../lib/constants';
 
 export default function Footer() {
   return (
-    <footer className="no-print mx-auto max-w-6xl px-4 pb-28 pt-10 sm:px-6 md:pb-12">
-      <div className="grid gap-6 md:grid-cols-2">
-        <div id="privacy" className="rounded-3xl border border-ink/10 bg-white p-6 shadow-sm sm:p-7">
-          <p className="flex items-center gap-2 text-[15px] font-extrabold text-ink">
-            <span aria-hidden>🔒</span> Privacy by design
-          </p>
-          <ul className="mt-3 space-y-2 text-[13.5px] leading-relaxed text-stone-600">
-            <li>• QRs are generated on your device. Nothing is stored.</li>
-            <li>• No money moves here — only payment instructions.</li>
-            <li>• Never asks for UPI PIN, OTP, or bank passwords.</li>
-          </ul>
+    <footer className="no-print mx-auto max-w-6xl px-4 pb-28 pt-8 sm:px-6 md:pb-10">
+      <div className="console overflow-hidden rounded-xl">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 px-4 py-2.5 font-mono text-[11px] text-faint">
+          <span>
+            <span className="text-gold">splitupi</span> © {new Date().getFullYear()}
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" /> on-device
+          </span>
+          <span className="ml-auto">qr/deep-link generator only</span>
         </div>
-        <div className="flex flex-col gap-4">
-          <Disclaimer />
-          <div className="rounded-3xl border border-ink/10 bg-white p-6 shadow-sm">
-            <p className="text-[13px] font-bold text-ink">SplitUPI — one amount, multiple ready-to-pay UPI QR codes.</p>
-            <p className="mt-1 text-[13px] text-stone-500">
-              For freelancers, shops, anyone collecting a fixed total in parts.
-            </p>
-            <p className="mt-3 text-[12px] text-stone-400">© {new Date().getFullYear()} SplitUPI</p>
-          </div>
-        </div>
-      </div>
-
-      <div id="faq" className="mt-6 rounded-3xl border border-ink/10 bg-white p-6 shadow-sm sm:p-8">
-        <h3 className="text-[17px] font-extrabold tracking-tight text-ink">FAQ</h3>
-        <div className="mt-4 grid gap-5 text-[13.5px] leading-relaxed text-stone-600 md:grid-cols-3">
-          <div>
-            <p className="font-bold text-ink">Does it move money?</p>
-            <p className="mt-1">No. It makes QR codes and links. Payers pay in their own UPI app.</p>
-          </div>
-          <div>
-            <p className="font-bold text-ink">Do parts add up exactly?</p>
-            <p className="mt-1">Yes — paise-exact math. ₹4,500 ÷ ₹1,999 → 1,999 + 1,999 + 502.</p>
-          </div>
-          <div>
-            <p className="font-bold text-ink">Are presets official limits?</p>
-            <p className="mt-1">No, convenience options only. Real limits come from your bank or UPI app.</p>
-          </div>
+        <div className="grid gap-px border-t border-white/10 bg-white/10 font-mono text-[11.5px] sm:grid-cols-3">
+          <details className="console-details bg-night px-4 py-2.5">
+            <summary className="text-mist">disclaimer</summary>
+            <p className="pt-2 font-sans text-[12px] leading-relaxed text-faint">{DISCLAIMER_TEXT}</p>
+          </details>
+          <details className="console-details bg-night px-4 py-2.5">
+            <summary className="text-mist">privacy</summary>
+            <ul className="space-y-1 pt-2 font-sans text-[12px] leading-relaxed text-faint">
+              <li>• Generated on your device. Nothing stored.</li>
+              <li>• No money moves here. Never asks for PIN/OTP.</li>
+            </ul>
+          </details>
+          <details className="console-details bg-night px-4 py-2.5">
+            <summary className="text-mist">faq</summary>
+            <div className="space-y-1.5 pt-2 font-sans text-[12px] leading-relaxed text-faint">
+              <p><span className="text-mist">Move money?</span> No — QRs only.</p>
+              <p><span className="text-mist">Exact sums?</span> Yes, paise-exact.</p>
+              <p><span className="text-mist">Presets = limits?</span> No, convenience only.</p>
+            </div>
+          </details>
         </div>
       </div>
     </footer>

@@ -2,13 +2,22 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 import Header from './components/Header';
 import PaymentForm from './components/PaymentForm';
 import PaymentSummary, { type GeneratedPayment } from './components/PaymentSummary';
-import Disclaimer from './components/Disclaimer';
 import Footer from './components/Footer';
 import { DEFAULT_MAX_PER_QR } from './lib/constants';
 import { validateInputs, type PaymentInputs, type ValidationResult } from './lib/validation';
 import { buildUpiUri } from './lib/upi';
 import { qrDataUrl } from './lib/download';
 import { formatINR } from './lib/format';
+
+function Dots() {
+  return (
+    <span className="flex gap-1.5" aria-hidden>
+      <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
+      <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" />
+      <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
+    </span>
+  );
+}
 
 export default function App() {
   const [inputs, setInputs] = useState<PaymentInputs>({
@@ -63,118 +72,117 @@ export default function App() {
   }, []);
 
   return (
-    <div id="top" className="min-h-screen">
+    <div id="top" className="min-h-screen bg-night text-mist">
       <Header onGenerate={scrollToForm} />
 
-      {/* HERO */}
-      <section className="hero-grid no-print border-b border-ink/10">
-        <div className="mx-auto max-w-6xl px-4 pb-10 pt-12 sm:px-6 sm:pt-16">
-          <div className="mx-auto max-w-3xl text-center">
-            <span className="inline-flex items-center gap-2 rounded-full border border-gold/50 bg-cream px-3.5 py-1.5 text-[12.5px] font-bold text-[#7a5c0e] shadow-sm">
-              <span className="h-2 w-2 animate-pulse rounded-full bg-forest" />
-              No signup • Works offline
-            </span>
-            <h1 className="mt-5 text-[38px] font-black leading-[1.05] tracking-tight text-ink sm:text-[56px]">
-              One amount.
-              <br />
-              <span className="bg-gradient-to-r from-forest via-moss to-gold bg-clip-text text-transparent">
-                Multiple UPI QR codes.
-              </span>
-            </h1>
-            <p className="mx-auto mt-4 max-w-xl text-[16px] leading-relaxed text-stone-500 sm:text-[18px]">
-              Generate ready-to-pay UPI QR codes in seconds.
-            </p>
-            <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <button
-                onClick={scrollToForm}
-                className="w-full rounded-2xl bg-forest px-8 py-4 text-[16px] font-bold text-white shadow-xl shadow-forest/30 transition hover:bg-pine active:scale-[.99] sm:w-auto"
-              >
-                Generate QR Codes
-              </button>
-              <a
-                href="#how"
-                className="w-full rounded-2xl border border-ink/15 bg-white px-8 py-4 text-center text-[15px] font-bold text-ink shadow-sm transition hover:border-ink/30 sm:w-auto"
-              >
-                See how it works
-              </a>
+      {/* MASTHEAD */}
+      <section className="hero-grid no-print border-b border-white/10">
+        <div className="mx-auto max-w-6xl px-4 pb-10 pt-12 sm:px-6 sm:pt-14">
+          <div className="grid items-center gap-8 lg:grid-cols-2">
+            <div>
+              <p className="font-mono text-[12px] text-faint">~/ splitupi — upi qr splitter</p>
+              <h1 className="mt-3 text-[36px] font-black leading-[1.05] tracking-tight sm:text-[50px]">
+                One amount.
+                <br />
+                <span className="bg-gradient-to-r from-gold via-[#e8c85a] to-moss bg-clip-text text-transparent">
+                  Multiple UPI QR codes.
+                </span>
+              </h1>
+              <p className="mt-3 max-w-md text-[15px] text-faint">Ready-to-pay QR codes in seconds.</p>
+              <div className="mt-6">
+                <button
+                  onClick={scrollToForm}
+                  className="rounded-xl bg-gold px-7 py-3.5 font-mono text-[15px] font-bold text-night shadow-xl shadow-gold/20 transition hover:brightness-110 active:scale-[.99]"
+                >
+                  $ generate
+                </button>
+              </div>
             </div>
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[13px] font-medium text-stone-500">
-              <span>✓ Exact split</span>
-              <span>✓ On-device QRs</span>
-              <span>✓ Print • Share</span>
+            <div className="console overflow-hidden rounded-2xl">
+              <div className="console-bar flex items-center justify-between px-4 py-2.5">
+                <Dots />
+                <span className="font-mono text-[11px] text-faint">preview — exact split</span>
+              </div>
+              <div className="slim-scroll overflow-x-auto p-5 font-mono text-[13.5px] leading-[1.9]">
+                <p className="whitespace-nowrap text-mist">
+                  <span className="text-gold">$</span> split 4500 --max 1999
+                </p>
+                <p className="whitespace-nowrap text-faint">→ 1,999 + 1,999 + 502</p>
+                <p className="whitespace-nowrap text-emerald-400">✓ total 4,500 exact</p>
+                <p className="caret whitespace-nowrap text-mist">
+                  <span className="text-gold">$</span>{' '}
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* GENERATOR */}
+      {/* CONSOLE */}
       <main id="generator" className="no-print mx-auto max-w-6xl scroll-mt-20 px-4 pt-8 sm:px-6">
-        <div className="grid items-start gap-6 lg:grid-cols-[440px_1fr]">
-          <div ref={formRef} className="scroll-mt-24 lg:sticky lg:top-24">
-            <PaymentForm inputs={inputs} setInputs={setInputs} validation={validation} onGenerate={handleGenerate} />
-            {generating && (
-              <p className="mt-3 text-center text-[13px] font-semibold text-forest">Generating QR codes…</p>
-            )}
+        <div className="console overflow-hidden rounded-2xl">
+          <div className="console-bar flex items-center justify-between px-4 py-2.5">
+            <Dots />
+            <span className="font-mono text-[11px] text-faint">splitupi — console</span>
+            <span className="hidden font-mono text-[11px] text-faint sm:inline">utf-8 · on-device</span>
           </div>
-          <div ref={summaryRef} className="scroll-mt-24">
-            <PaymentSummary
-              generated={generated}
-              total={generated && totals !== null ? totals : null}
-              maxPerQr={generated ? Number(inputs.maxPerQr.replace(/,/g, '')) : null}
-              upiId={inputs.upiId.trim()}
-              receiverName={inputs.receiverName.trim()}
-              note={inputs.note}
-            />
-            <div className="mt-4">
-              <Disclaimer />
+          <div className="grid lg:grid-cols-[400px_1fr]">
+            <div ref={formRef} className="scroll-mt-24 border-b border-white/10 lg:border-b-0 lg:border-r">
+              <p className="border-b border-white/10 px-5 py-2.5 font-mono text-[11.5px] text-gold">
+                $ input — payment details
+              </p>
+              <div className="p-4 sm:p-5">
+                <PaymentForm inputs={inputs} setInputs={setInputs} validation={validation} onGenerate={handleGenerate} />
+                {generating && (
+                  <p className="mt-3 text-center font-mono text-[12px] text-gold">working…</p>
+                )}
+              </div>
+            </div>
+            <div ref={summaryRef} className="scroll-mt-24">
+              <p className="border-b border-white/10 px-5 py-2.5 font-mono text-[11.5px] text-gold">
+                $ output — qr packets{generated ? ` (${generated.length})` : ''}
+              </p>
+              <div className="p-4 sm:p-5">
+                <PaymentSummary
+                  generated={generated}
+                  total={generated && totals !== null ? totals : null}
+                  maxPerQr={generated ? Number(inputs.maxPerQr.replace(/,/g, '')) : null}
+                  upiId={inputs.upiId.trim()}
+                  receiverName={inputs.receiverName.trim()}
+                  note={inputs.note}
+                />
+              </div>
             </div>
           </div>
         </div>
 
-        {/* HOW IT WORKS / SEO LANDING */}
-        <section id="how" className="mt-12 scroll-mt-24 rounded-3xl border border-ink/10 bg-white p-6 shadow-sm sm:p-10">
-          <h2 className="text-center text-[24px] font-black tracking-tight text-ink sm:text-[30px]">
-            Split a total into ready-to-pay QR codes
-          </h2>
-          <p className="mx-auto mt-2 max-w-2xl text-center text-[14.5px] leading-relaxed text-stone-500">
-            Enter your UPI ID, name, and total. SplitUPI divides it into exact-amount QR codes —
-            payers scan and pay in their own UPI app.
-          </p>
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
-            {[
-              { t: '1. Enter details', d: 'UPI ID, name, total, max per QR, optional note.', i: '⌨️' },
-              { t: '2. Get exact QRs', d: '₹4,500 ÷ ₹1,999 → 1,999 + 1,999 + 502. Exact to the paise.', i: '✂️' },
-              { t: '3. Share or print', d: 'Branded PNGs, UPI links, share, or a clean print sheet.', i: '🖨️' },
-            ].map((c) => (
-              <div key={c.t} className="rounded-2xl border border-ink/10 bg-paper p-5">
-                <div className="text-2xl">{c.i}</div>
-                <p className="mt-2 text-[15px] font-extrabold text-ink">{c.t}</p>
-                <p className="mt-1 text-[13.5px] leading-relaxed text-stone-500">{c.d}</p>
-              </div>
-            ))}
-          </div>
-          <div className="mt-6 flex flex-wrap justify-center gap-2 text-[12.5px] font-semibold text-stone-500">
-            {['upi://pay links', 'No PIN / OTP asked', 'PWA installable', 'Print mode'].map(
-              (t) => (
-                <span key={t} className="rounded-full border border-ink/10 bg-white px-3 py-1.5 shadow-sm">
-                  {t}
-                </span>
-              ),
-            )}
-          </div>
+        {/* STEPS */}
+        <section className="mt-6 grid gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 sm:grid-cols-3">
+          {[
+            ['01', 'enter', 'upi id · name · total'],
+            ['02', 'split', 'paise-exact parts'],
+            ['03', 'scan', 'pay in any upi app'],
+          ].map(([n, t, d]) => (
+            <div key={n} className="bg-night px-5 py-4">
+              <p className="font-mono text-[12px]">
+                <span className="text-gold">{n}</span> <span className="font-bold text-mist">{t}</span>
+              </p>
+              <p className="mt-1 font-mono text-[11.5px] text-faint">{d}</p>
+            </div>
+          ))}
         </section>
       </main>
 
       <Footer />
 
       {/* STICKY MOBILE CTA */}
-      <div className="no-print fixed inset-x-0 bottom-0 z-40 border-t border-ink/10 bg-cream/90 p-3 backdrop-blur-xl lg:hidden" style={{ paddingBottom: 'max(12px, env(safe-area-inset-bottom))' }}>
+      <div className="no-print fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-night/90 p-3 backdrop-blur-xl lg:hidden" style={{ paddingBottom: 'max(12px, env(safe-area-inset-bottom))' }}>
         <button
           onClick={handleGenerate}
           disabled={generating}
-          className="w-full rounded-2xl bg-forest px-6 py-3.5 text-[15.5px] font-bold text-white shadow-xl shadow-forest/30 transition hover:bg-pine active:scale-[.99] disabled:opacity-70"
+          className="w-full rounded-xl bg-gold px-6 py-3.5 font-mono text-[15px] font-bold text-night shadow-xl transition active:scale-[.99] disabled:opacity-70"
         >
-          {generating ? 'Generating…' : generated ? `Regenerate QR Codes (${generated.length})` : 'Generate QR Codes'}
+          {generating ? 'working…' : generated ? `$ regenerate (${generated.length})` : '$ generate'}
         </button>
       </div>
 
