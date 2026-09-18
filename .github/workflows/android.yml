@@ -1,14 +1,21 @@
 name: Android
 
 # Builds the debug APK and attaches it to the matching version release.
-# Runs when a version tag (v*) is pushed — after the release notes exist.
+# Runs when a version tag (v*) is pushed, or manually via workflow_dispatch.
 on:
   push:
     tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Version tag to attach the APK to (e.g. v1.4.0)'
+        required: true
 
 jobs:
   apk:
     runs-on: ubuntu-latest
+    env:
+      TAG: ${{ inputs.tag || github.ref_name }}
     steps:
       - uses: actions/checkout@v4
 
@@ -22,7 +29,11 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - uses: android-actions/setup-android@v3
+      - name: Install Android SDK packages
+        run: |
+          export ANDROID_HOME=$ANDROID_SDK_ROOT
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36" "build-tools;36.0.0"
 
       - run: npm ci
       - run: npm run build
@@ -37,6 +48,6 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          cp android/app/build/outputs/apk/debug/app-debug.apk splitupi-${{ github.ref_name }}.apk
-          gh release view ${{ github.ref_name }} >/dev/null 2>&1 || gh release create ${{ github.ref_name }} --title "${{ github.ref_name }}" --notes "Android build."
-          gh release upload ${{ github.ref_name }} splitupi-${{ github.ref_name }}.apk --clobber
+          cp android/app/build/outputs/apk/debug/app-debug.apk splitupi-${TAG}.apk
+          gh release view "${TAG}" >/dev/null 2>&1 || gh release create "${TAG}" --title "${TAG}" --notes "Android build."
+          gh release upload "${TAG}" splitupi-${TAG}.apk --clobber
