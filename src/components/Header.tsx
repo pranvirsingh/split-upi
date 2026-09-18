@@ -1,6 +1,6 @@
 export default function Header({ onGenerate }: { onGenerate: () => void }) {
   return (
-    <header className="no-print sticky top-0 z-40 border-b border-white/10 bg-night/85 backdrop-blur-xl">
+    <header className="no-print sticky top-0 z-40 border-b border-white/10 bg-night/85 backdrop-blur-xl" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
         <a href="#top" className="flex items-center gap-2.5">
           <span className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-moss to-gold text-night shadow-lg shadow-black/40">

@@ -58,8 +58,8 @@ export default function QRCodeCard({ index, total, amount, upiId, receiverName, 
         <div className="mt-3 grid w-full grid-cols-3 gap-1.5">
           <button
             onClick={async () => {
-              await downloadBrandedQr({ index, total, amount, upiId, receiverName, note, uri });
-              flash('saved');
+              const r = await downloadBrandedQr({ index, total, amount, upiId, receiverName, note, uri });
+              flash(r === 'failed' ? 'failed' : r === 'shared' ? 'shared' : 'PNG downloaded');
             }}
             className="rounded-md bg-gold px-2 py-2 font-mono text-[11.5px] font-bold text-night transition hover:brightness-110 active:scale-95"
           >

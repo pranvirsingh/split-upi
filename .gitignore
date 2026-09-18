@@ -3,3 +3,10 @@ dist/
 .DS_Store
 .vercel/
 *.local
+# Capacitor / Android (regenerable)
+android/app/src/main/assets/
+android/app/build/
+android/build/
+android/.gradle/
+android/local.properties
+android/*.iml
