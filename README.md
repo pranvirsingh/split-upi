@@ -33,7 +33,8 @@ npm run preview
 ## Tests
 
 ```bash
-npm run test:logic
+npm test          # vitest: unit, denial, QR-decode (39 tests)
+npm run test:logic # spec regression script
 ```
 
 Covers all required cases from the spec (splitting, rounding, validation, URI generation).
