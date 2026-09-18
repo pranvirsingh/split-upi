@@ -18,17 +18,23 @@ export default function PaymentForm({ inputs, setInputs, validation, onGenerate 
     setInputs({ ...inputs, [k]: e.target.value });
 
   const err = validation && !validation.ok ? validation.errors : {};
+  const inputCls = (bad?: string) =>
+    `w-full rounded-xl border bg-paper px-4 py-3 text-[15px] font-medium text-ink outline-none transition placeholder:font-normal placeholder:text-stone-400 focus:bg-white focus:ring-4 ${
+      bad
+        ? 'border-rose-300 focus:border-rose-400 focus:ring-rose-100'
+        : 'border-ink/10 focus:border-forest focus:ring-forest/15'
+    }`;
 
   return (
-    <div className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-[0_20px_60px_-24px_rgba(76,29,149,.25)]">
-      <div className="border-b border-slate-100 px-6 pb-5 pt-6 sm:px-8">
-        <h2 className="text-[19px] font-extrabold tracking-tight text-slate-900">Payment details</h2>
-        <p className="mt-1 text-[14px] text-slate-500">Enter your UPI details and the full amount you want to collect.</p>
+    <div className="overflow-hidden rounded-3xl border border-ink/10 bg-white shadow-[0_20px_60px_-24px_rgba(23,59,46,.22)]">
+      <div className="border-b border-ink/10 px-6 pb-5 pt-6 sm:px-8">
+        <h2 className="text-[19px] font-extrabold tracking-tight text-ink">Payment details</h2>
+        <p className="mt-1 text-[14px] text-stone-500">UPI details + the full amount to collect.</p>
       </div>
 
       <div className="space-y-5 px-6 py-6 sm:px-8">
         <div>
-          <label htmlFor="upiId" className="mb-1.5 block text-[13.5px] font-semibold text-slate-700">
+          <label htmlFor="upiId" className="mb-1.5 block text-[13.5px] font-semibold text-stone-700">
             Your UPI ID
           </label>
           <input
@@ -40,17 +46,13 @@ export default function PaymentForm({ inputs, setInputs, validation, onGenerate 
             value={inputs.upiId}
             onChange={set('upiId')}
             onKeyDown={(e) => e.key === 'Enter' && onGenerate()}
-            className={`w-full rounded-xl border bg-slate-50/60 px-4 py-3 text-[15px] font-medium text-slate-900 outline-none transition placeholder:font-normal placeholder:text-slate-400 focus:bg-white focus:ring-4 ${
-              err.upiId
-                ? 'border-rose-300 focus:border-rose-400 focus:ring-rose-100'
-                : 'border-slate-200 focus:border-violet-500 focus:ring-violet-100'
-            }`}
+            className={inputCls(err.upiId)}
           />
           <FieldError msg={err.upiId} />
         </div>
 
         <div>
-          <label htmlFor="rname" className="mb-1.5 block text-[13.5px] font-semibold text-slate-700">
+          <label htmlFor="rname" className="mb-1.5 block text-[13.5px] font-semibold text-stone-700">
             Receiver Name
           </label>
           <input
@@ -60,22 +62,18 @@ export default function PaymentForm({ inputs, setInputs, validation, onGenerate 
             value={inputs.receiverName}
             onChange={set('receiverName')}
             onKeyDown={(e) => e.key === 'Enter' && onGenerate()}
-            className={`w-full rounded-xl border bg-slate-50/60 px-4 py-3 text-[15px] font-medium text-slate-900 outline-none transition placeholder:font-normal placeholder:text-slate-400 focus:bg-white focus:ring-4 ${
-              err.receiverName
-                ? 'border-rose-300 focus:border-rose-400 focus:ring-rose-100'
-                : 'border-slate-200 focus:border-violet-500 focus:ring-violet-100'
-            }`}
+            className={inputCls(err.receiverName)}
           />
           <FieldError msg={err.receiverName} />
         </div>
 
         <div className="grid gap-5 sm:grid-cols-2">
           <div>
-            <label htmlFor="total" className="mb-1.5 block text-[13.5px] font-semibold text-slate-700">
+            <label htmlFor="total" className="mb-1.5 block text-[13.5px] font-semibold text-stone-700">
               Total Amount
             </label>
             <div className="relative">
-              <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[14px] font-bold text-slate-400">
+              <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[14px] font-bold text-stone-400">
                 ₹
               </span>
               <input
@@ -86,21 +84,17 @@ export default function PaymentForm({ inputs, setInputs, validation, onGenerate 
                 value={inputs.totalAmount}
                 onChange={set('totalAmount')}
                 onKeyDown={(e) => e.key === 'Enter' && onGenerate()}
-                className={`w-full rounded-xl border bg-slate-50/60 py-3 pl-9 pr-4 text-[15px] font-semibold text-slate-900 outline-none transition placeholder:font-normal placeholder:text-slate-400 focus:bg-white focus:ring-4 ${
-                  err.totalAmount
-                    ? 'border-rose-300 focus:border-rose-400 focus:ring-rose-100'
-                    : 'border-slate-200 focus:border-violet-500 focus:ring-violet-100'
-                }`}
+                className={`${inputCls(err.totalAmount)} pl-9 font-semibold`}
               />
             </div>
             <FieldError msg={err.totalAmount} />
           </div>
           <div>
-            <label htmlFor="maxqr" className="mb-1.5 block text-[13.5px] font-semibold text-slate-700">
-              Maximum Amount Per QR
+            <label htmlFor="maxqr" className="mb-1.5 block text-[13.5px] font-semibold text-stone-700">
+              Max Per QR
             </label>
             <div className="relative">
-              <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[14px] font-bold text-slate-400">
+              <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[14px] font-bold text-stone-400">
                 ₹
               </span>
               <input
@@ -111,11 +105,7 @@ export default function PaymentForm({ inputs, setInputs, validation, onGenerate 
                 value={inputs.maxPerQr}
                 onChange={set('maxPerQr')}
                 onKeyDown={(e) => e.key === 'Enter' && onGenerate()}
-                className={`w-full rounded-xl border bg-slate-50/60 py-3 pl-9 pr-4 text-[15px] font-semibold text-slate-900 outline-none transition placeholder:font-normal placeholder:text-slate-400 focus:bg-white focus:ring-4 ${
-                  err.maxPerQr
-                    ? 'border-rose-300 focus:border-rose-400 focus:ring-rose-100'
-                    : 'border-slate-200 focus:border-violet-500 focus:ring-violet-100'
-                }`}
+                className={`${inputCls(err.maxPerQr)} pl-9 font-semibold`}
               />
             </div>
             <FieldError msg={err.maxPerQr} />
@@ -125,8 +115,8 @@ export default function PaymentForm({ inputs, setInputs, validation, onGenerate 
         <AmountPreset value={inputs.maxPerQr} onChange={(v) => setInputs({ ...inputs, maxPerQr: v })} />
 
         <div>
-          <label htmlFor="note" className="mb-1.5 block text-[13.5px] font-semibold text-slate-700">
-            Payment Note <span className="ml-1 font-medium text-slate-400">Optional</span>
+          <label htmlFor="note" className="mb-1.5 block text-[13.5px] font-semibold text-stone-700">
+            Note <span className="ml-1 font-medium text-stone-400">Optional</span>
           </label>
           <input
             id="note"
@@ -136,7 +126,7 @@ export default function PaymentForm({ inputs, setInputs, validation, onGenerate 
             value={inputs.note}
             onChange={set('note')}
             onKeyDown={(e) => e.key === 'Enter' && onGenerate()}
-            className="w-full rounded-xl border border-slate-200 bg-slate-50/60 px-4 py-3 text-[15px] font-medium text-slate-900 outline-none transition placeholder:font-normal placeholder:text-slate-400 focus:border-violet-500 focus:bg-white focus:ring-4 focus:ring-violet-100"
+            className={inputCls()}
           />
         </div>
 
@@ -148,13 +138,13 @@ export default function PaymentForm({ inputs, setInputs, validation, onGenerate 
 
         <button
           onClick={onGenerate}
-          className="group flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-b from-violet-600 to-indigo-700 px-6 py-4 text-[16px] font-bold text-white shadow-xl shadow-violet-600/30 transition hover:shadow-2xl hover:shadow-violet-600/40 hover:brightness-110 active:scale-[.99]"
+          className="group flex w-full items-center justify-center gap-2 rounded-2xl bg-forest px-6 py-4 text-[16px] font-bold text-white shadow-xl shadow-forest/30 transition hover:bg-pine active:scale-[.99]"
         >
           Generate QR Codes
           <span aria-hidden className="transition-transform group-hover:translate-x-1">→</span>
         </button>
-        <p className="flex items-center justify-center gap-1.5 pb-1 text-center text-[12.5px] font-medium text-slate-500">
-          <span aria-hidden>🔒</span> Payment details are processed locally whenever possible.
+        <p className="flex items-center justify-center gap-1.5 pb-1 text-center text-[12.5px] font-medium text-stone-500">
+          <span aria-hidden>🔒</span> Processed on your device.
         </p>
       </div>
     </div>

@@ -22,8 +22,8 @@ export default function AmountPreset({ value, onChange }: Props) {
               onClick={() => onChange(String(p))}
               className={`rounded-full px-3.5 py-1.5 text-[13px] font-semibold transition active:scale-95 ${
                 active
-                  ? 'bg-violet-600 text-white shadow-md shadow-violet-600/30'
-                  : 'border border-slate-200 bg-white text-slate-600 hover:border-violet-300 hover:text-violet-700'
+                  ? 'bg-forest text-white shadow-md shadow-forest/30'
+                  : 'border border-ink/10 bg-white text-stone-600 hover:border-forest/40 hover:text-forest'
               }`}
             >
               ₹{formatINR(p)}/-
@@ -35,15 +35,15 @@ export default function AmountPreset({ value, onChange }: Props) {
           onClick={() => onChange('')}
           className={`rounded-full px-3.5 py-1.5 text-[13px] font-semibold transition active:scale-95 ${
             isCustom || value.trim() === ''
-              ? 'bg-slate-900 text-white shadow-md'
-              : 'border border-slate-200 bg-white text-slate-600 hover:border-slate-300'
+              ? 'bg-ink text-white shadow-md'
+              : 'border border-ink/10 bg-white text-stone-600 hover:border-ink/25'
           }`}
         >
           Custom
         </button>
       </div>
-      <p className="mt-2 text-[12px] leading-relaxed text-slate-400">
-        Convenience options only — not official UPI transaction limits.
+      <p className="mt-2 text-[12px] leading-relaxed text-stone-400">
+        Convenience options only — not official limits.
       </p>
     </div>
   );

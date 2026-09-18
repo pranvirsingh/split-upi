@@ -67,41 +67,41 @@ export default function App() {
       <Header onGenerate={scrollToForm} />
 
       {/* HERO */}
-      <section className="hero-grid no-print border-b border-slate-200/70">
+      <section className="hero-grid no-print border-b border-ink/10">
         <div className="mx-auto max-w-6xl px-4 pb-10 pt-12 sm:px-6 sm:pt-16">
           <div className="mx-auto max-w-3xl text-center">
-            <span className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-white px-3.5 py-1.5 text-[12.5px] font-bold text-violet-700 shadow-sm">
-              <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-500" />
-              No signup required • Works offline after first load
+            <span className="inline-flex items-center gap-2 rounded-full border border-gold/50 bg-cream px-3.5 py-1.5 text-[12.5px] font-bold text-[#7a5c0e] shadow-sm">
+              <span className="h-2 w-2 animate-pulse rounded-full bg-forest" />
+              No signup • Works offline
             </span>
-            <h1 className="mt-5 text-[38px] font-black leading-[1.05] tracking-tight text-slate-900 sm:text-[56px]">
+            <h1 className="mt-5 text-[38px] font-black leading-[1.05] tracking-tight text-ink sm:text-[56px]">
               One amount.
               <br />
-              <span className="bg-gradient-to-r from-violet-700 via-indigo-600 to-blue-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-forest via-moss to-gold bg-clip-text text-transparent">
                 Multiple UPI QR codes.
               </span>
             </h1>
-            <p className="mx-auto mt-4 max-w-xl text-[16px] leading-relaxed text-slate-500 sm:text-[18px]">
+            <p className="mx-auto mt-4 max-w-xl text-[16px] leading-relaxed text-stone-500 sm:text-[18px]">
               Generate ready-to-pay UPI QR codes in seconds.
             </p>
             <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <button
                 onClick={scrollToForm}
-                className="w-full rounded-2xl bg-gradient-to-b from-violet-600 to-indigo-700 px-8 py-4 text-[16px] font-bold text-white shadow-xl shadow-violet-600/30 transition hover:brightness-110 active:scale-[.99] sm:w-auto"
+                className="w-full rounded-2xl bg-forest px-8 py-4 text-[16px] font-bold text-white shadow-xl shadow-forest/30 transition hover:bg-pine active:scale-[.99] sm:w-auto"
               >
                 Generate QR Codes
               </button>
               <a
                 href="#how"
-                className="w-full rounded-2xl border border-slate-300 bg-white px-8 py-4 text-center text-[15px] font-bold text-slate-700 shadow-sm transition hover:border-slate-400 sm:w-auto"
+                className="w-full rounded-2xl border border-ink/15 bg-white px-8 py-4 text-center text-[15px] font-bold text-ink shadow-sm transition hover:border-ink/30 sm:w-auto"
               >
                 See how it works
               </a>
             </div>
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[13px] font-medium text-slate-500">
-              <span>✓ Exact split — totals always match</span>
-              <span>✓ Client-side QR generation</span>
-              <span>✓ Print • Download • Share</span>
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[13px] font-medium text-stone-500">
+              <span>✓ Exact split</span>
+              <span>✓ On-device QRs</span>
+              <span>✓ Print • Share</span>
             </div>
           </div>
         </div>
@@ -113,7 +113,7 @@ export default function App() {
           <div ref={formRef} className="scroll-mt-24 lg:sticky lg:top-24">
             <PaymentForm inputs={inputs} setInputs={setInputs} validation={validation} onGenerate={handleGenerate} />
             {generating && (
-              <p className="mt-3 text-center text-[13px] font-semibold text-violet-700">Generating QR codes…</p>
+              <p className="mt-3 text-center text-[13px] font-semibold text-forest">Generating QR codes…</p>
             )}
           </div>
           <div ref={summaryRef} className="scroll-mt-24">
@@ -132,32 +132,31 @@ export default function App() {
         </div>
 
         {/* HOW IT WORKS / SEO LANDING */}
-        <section id="how" className="mt-12 scroll-mt-24 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-10">
-          <h2 className="text-center text-[24px] font-black tracking-tight text-slate-900 sm:text-[30px]">
+        <section id="how" className="mt-12 scroll-mt-24 rounded-3xl border border-ink/10 bg-white p-6 shadow-sm sm:p-10">
+          <h2 className="text-center text-[24px] font-black tracking-tight text-ink sm:text-[30px]">
             Split a total into ready-to-pay QR codes
           </h2>
-          <p className="mx-auto mt-2 max-w-2xl text-center text-[14.5px] leading-relaxed text-slate-500">
-            Enter your UPI ID, receiver name, and the full amount you want to collect. SplitUPI divides it into
-            multiple standard UPI payment QR codes — each with its exact amount encoded. Payers simply scan and pay in
-            their own UPI app.
+          <p className="mx-auto mt-2 max-w-2xl text-center text-[14.5px] leading-relaxed text-stone-500">
+            Enter your UPI ID, name, and total. SplitUPI divides it into exact-amount QR codes —
+            payers scan and pay in their own UPI app.
           </p>
           <div className="mt-8 grid gap-4 md:grid-cols-3">
             {[
-              { t: '1. Enter payment details', d: 'Your UPI ID, receiver name, total amount, max per QR, and an optional note like “Invoice 001”.', i: '⌨️' },
-              { t: '2. Get exact-split QRs', d: '₹4,500 with max ₹1,999 becomes 1,999 + 1,999 + 502. Integer-paise math means the sum always matches exactly.', i: '✂️' },
-              { t: '3. Download, share, print', d: 'Download branded PNGs, copy UPI links, share via the Web Share API, or print a clean sheet for your counter.', i: '🖨️' },
+              { t: '1. Enter details', d: 'UPI ID, name, total, max per QR, optional note.', i: '⌨️' },
+              { t: '2. Get exact QRs', d: '₹4,500 ÷ ₹1,999 → 1,999 + 1,999 + 502. Exact to the paise.', i: '✂️' },
+              { t: '3. Share or print', d: 'Branded PNGs, UPI links, share, or a clean print sheet.', i: '🖨️' },
             ].map((c) => (
-              <div key={c.t} className="rounded-2xl border border-slate-200 bg-slate-50/70 p-5">
+              <div key={c.t} className="rounded-2xl border border-ink/10 bg-paper p-5">
                 <div className="text-2xl">{c.i}</div>
-                <p className="mt-2 text-[15px] font-extrabold text-slate-900">{c.t}</p>
-                <p className="mt-1 text-[13.5px] leading-relaxed text-slate-500">{c.d}</p>
+                <p className="mt-2 text-[15px] font-extrabold text-ink">{c.t}</p>
+                <p className="mt-1 text-[13.5px] leading-relaxed text-stone-500">{c.d}</p>
               </div>
             ))}
           </div>
-          <div className="mt-6 flex flex-wrap justify-center gap-2 text-[12.5px] font-semibold text-slate-500">
-            {['upi://pay standard links', 'URL-encoded params', 'No PIN / OTP ever asked', 'PWA installable', 'Mobile-first + print mode'].map(
+          <div className="mt-6 flex flex-wrap justify-center gap-2 text-[12.5px] font-semibold text-stone-500">
+            {['upi://pay links', 'No PIN / OTP asked', 'PWA installable', 'Print mode'].map(
               (t) => (
-                <span key={t} className="rounded-full border border-slate-200 bg-white px-3 py-1.5 shadow-sm">
+                <span key={t} className="rounded-full border border-ink/10 bg-white px-3 py-1.5 shadow-sm">
                   {t}
                 </span>
               ),
@@ -169,11 +168,11 @@ export default function App() {
       <Footer />
 
       {/* STICKY MOBILE CTA */}
-      <div className="no-print fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/90 p-3 backdrop-blur-xl lg:hidden" style={{ paddingBottom: 'max(12px, env(safe-area-inset-bottom))' }}>
+      <div className="no-print fixed inset-x-0 bottom-0 z-40 border-t border-ink/10 bg-cream/90 p-3 backdrop-blur-xl lg:hidden" style={{ paddingBottom: 'max(12px, env(safe-area-inset-bottom))' }}>
         <button
           onClick={handleGenerate}
           disabled={generating}
-          className="w-full rounded-2xl bg-gradient-to-b from-violet-600 to-indigo-700 px-6 py-3.5 text-[15.5px] font-bold text-white shadow-xl shadow-violet-600/30 transition active:scale-[.99] disabled:opacity-70"
+          className="w-full rounded-2xl bg-forest px-6 py-3.5 text-[15.5px] font-bold text-white shadow-xl shadow-forest/30 transition hover:bg-pine active:scale-[.99] disabled:opacity-70"
         >
           {generating ? 'Generating…' : generated ? `Regenerate QR Codes (${generated.length})` : 'Generate QR Codes'}
         </button>
@@ -198,7 +197,7 @@ export default function App() {
               <div className="print-card" key={i} style={{ display: 'flex', gap: 20, alignItems: 'center' }}>
                 <img src={g.qr} alt={`Payment ${i + 1} QR`} style={{ width: 220, height: 220 }} />
                 <div>
-                  <p style={{ fontSize: 13, fontWeight: 700, color: '#6d28d9', margin: 0 }}>
+                  <p style={{ fontSize: 13, fontWeight: 700, color: '#173b2e', margin: 0 }}>
                     PAYMENT {i + 1} OF {generated.length}
                   </p>
                   <p style={{ fontSize: 30, fontWeight: 900, margin: '6px 0' }}>
