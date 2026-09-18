@@ -42,6 +42,7 @@ jobs:
       - name: Build debug APK
         run: |
           export ANDROID_HOME=$ANDROID_SDK_ROOT
+          chmod +x android/gradlew
           cd android && ./gradlew assembleDebug --no-daemon
 
       - name: Attach APK to release
