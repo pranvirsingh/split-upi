@@ -34,6 +34,7 @@ import {
 } from './src/lib/profiles';
 import { payViewUrl } from './src/lib/payview';
 import { checkForUpdate, type UpdateInfo } from './src/lib/update';
+import Checklist from './src/Checklist';
 
 const NIGHT = '#0c1210';
 const PANEL = '#121a15';
@@ -77,6 +78,7 @@ export default function App() {
   const [list, setList] = useState<Gen[] | null>(null);
   const [profiles, setProfiles] = useState<ReceiverProfile[]>([]);
   const [update, setUpdate] = useState<UpdateInfo | null>(null);
+  const [tab, setTab] = useState<'gen' | 'pay'>('gen');
   const qrRefs = useRef<Record<number, QrHandle | null>>({});
 
   useEffect(() => {
@@ -203,6 +205,7 @@ export default function App() {
   return (
     <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
       <StatusBar barStyle="light-content" />
+      {tab === 'gen' ? (
       <ScrollView contentContainerStyle={styles.body} keyboardShouldPersistTaps="handled">
         <View style={styles.header}>
           <Logo />
@@ -362,6 +365,20 @@ export default function App() {
 
         <Text style={styles.fine}>{DISCLAIMER_TEXT}</Text>
       </ScrollView>
+      ) : (
+      <ScrollView contentContainerStyle={styles.body} keyboardShouldPersistTaps="handled">
+        <Checklist />
+        <Text style={styles.fine}>{DISCLAIMER_TEXT}</Text>
+      </ScrollView>
+      )}
+      <View style={styles.tabs}>
+        <Pressable style={[styles.tab, tab === 'gen' && styles.tabOn]} onPress={() => setTab('gen')}>
+          <Text style={[styles.tabTx, tab === 'gen' && styles.tabTxOn]}>generate</Text>
+        </Pressable>
+        <Pressable style={[styles.tab, tab === 'pay' && styles.tabOn]} onPress={() => setTab('pay')}>
+          <Text style={[styles.tabTx, tab === 'pay' && styles.tabTxOn]}>checklist</Text>
+        </Pressable>
+      </View>
     </SafeAreaView>
   );
 }
@@ -414,4 +431,9 @@ const styles = StyleSheet.create({
   act: { borderWidth: 1, borderColor: '#ffffff26', borderRadius: 8, paddingVertical: 9, paddingHorizontal: 20 },
   actTx: { color: MIST, fontSize: 13, fontWeight: 'bold', fontFamily: 'monospace' },
   fine: { color: FAINT, fontSize: 10, lineHeight: 15, marginTop: 4 },
+  tabs: { flexDirection: 'row', borderTopWidth: 1, borderTopColor: '#ffffff1a', backgroundColor: PANEL },
+  tab: { flex: 1, alignItems: 'center', paddingVertical: 12 },
+  tabOn: { borderTopWidth: 2, borderTopColor: GOLD, marginTop: -1 },
+  tabTx: { color: FAINT, fontSize: 12, fontFamily: 'monospace', fontWeight: 'bold' },
+  tabTxOn: { color: GOLD },
 });

@@ -53,4 +53,9 @@ describe('mobile update + payview', () => {
     expect(decodePayView('#p=!!!')).toBeNull();
     expect(decodePayView(`#p=${encodePayView({ v: 1, pa: 'x', pn: 'AB', tn: '', parts: [1] })}`)).toBeNull();
   });
+  it('decodes a full pasted site URL (checklist paste flow)', () => {
+    const s = { v: 1 as const, pa: 'example@upi', pn: 'Example Name', tn: 'rent', parts: [1999, 502] };
+    const full = `https://split-upi-ochre.vercel.app/#p=${encodePayView(s)}`;
+    expect(decodePayView(full)).toEqual(s);
+  });
 });
