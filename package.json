@@ -1,7 +1,7 @@
 {
   "name": "splitupi",
   "private": true,
-  "version": "1.10.0",
+  "version": "1.11.0",
   "type": "module",
   "description": "SplitUPI — Split one amount into multiple ready-to-pay UPI QR codes.",
   "scripts": {
