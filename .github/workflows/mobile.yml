@@ -40,9 +40,7 @@ jobs:
           export ANDROID_HOME=$ANDROID_SDK_ROOT
           SDKMAN="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
           yes | "$SDKMAN" --licenses >/dev/null
-          "$SDKMAN" "cmdline-tools;latest" "platform-tools" >/dev/null
-          yes | "$SDKMAN" --licenses >/dev/null
-          "$SDKMAN" "platforms;android-37" "build-tools;37.0.0"
+          "$SDKMAN" "platforms;android-36" "build-tools;36.0.0" "ndk;27.1.12297006"
 
       - run: npm ci
       - run: npm run typecheck
