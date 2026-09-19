@@ -1,7 +1,9 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Header from './components/Header';
 import PaymentForm from './components/PaymentForm';
 import PaymentSummary, { type GeneratedPayment } from './components/PaymentSummary';
+import PayView from './components/PayView';
+import { decodePayView } from './lib/payview';
 import Footer from './components/Footer';
 import { DEFAULT_MAX_PER_QR } from './lib/constants';
 import { validateInputs, type PaymentInputs, type ValidationResult } from './lib/validation';
@@ -33,6 +35,12 @@ export default function App() {
   const [validation, setValidation] = useState<ValidationResult | null>(null);
   const [generated, setGenerated] = useState<GeneratedPayment[] | null>(null);
   const [generating, setGenerating] = useState(false);
+  const [payState, setPayState] = useState(() => decodePayView(window.location.hash));
+  useEffect(() => {
+    const onHash = () => setPayState(decodePayView(window.location.hash));
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
+  }, []);
   const summaryRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLDivElement>(null);
 
@@ -96,6 +104,24 @@ export default function App() {
   const scrollToForm = useCallback(() => {
     document.getElementById('generator')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, []);
+
+  // Payer checklist mode: #p= link, no generator chrome.
+  if (window.location.hash.startsWith('#p=')) {
+    return (
+      <div id="top" className="min-h-screen bg-night text-mist">
+        {payState ? (
+          <PayView state={payState} />
+        ) : (
+          <div className="mx-auto max-w-xl px-4 py-16 text-center">
+            <p className="font-mono text-[14px] text-rose-400">! bad payer link</p>
+            <a href="/" className="mt-3 inline-block font-mono text-[12px] text-gold underline underline-offset-4">
+              back to SplitUPI
+            </a>
+          </div>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div id="top" className="min-h-screen bg-night text-mist">
