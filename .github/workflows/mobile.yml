@@ -45,16 +45,20 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
 
-      - name: Build native debug APK
+      - name: Build native release APKs (per architecture)
         run: |
           export ANDROID_HOME=$ANDROID_SDK_ROOT
           chmod +x android/gradlew
-          cd android && ./gradlew assembleDebug --no-daemon
+          cd android && ./gradlew assembleRelease --no-daemon
 
-      - name: Attach APK to release
+      - name: Attach APKs to release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          cp android/app/build/outputs/apk/debug/app-debug.apk ../splitupi-native-${TAG}.apk
+          APKDIR="android/app/build/outputs/apk/release"
+          cp "$APKDIR/app-armeabi-v7a-release.apk" "$GITHUB_WORKSPACE/splitupi-native-${TAG}-arm32.apk"
+          cp "$APKDIR/app-arm64-v8a-release.apk" "$GITHUB_WORKSPACE/splitupi-native-${TAG}-arm64.apk"
+          cp "$APKDIR/app-x86_64-release.apk" "$GITHUB_WORKSPACE/splitupi-native-${TAG}-x64.apk"
+          cd "$GITHUB_WORKSPACE"
           gh release view "${TAG}" >/dev/null 2>&1 || gh release create "${TAG}" --title "${TAG}" --notes "Native Android build."
-          gh release upload "${TAG}" ../splitupi-native-${TAG}.apk --clobber
+          gh release upload "${TAG}" splitupi-native-${TAG}-arm32.apk splitupi-native-${TAG}-arm64.apk splitupi-native-${TAG}-x64.apk --clobber
