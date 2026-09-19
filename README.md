@@ -28,6 +28,7 @@ npm run preview
   - `10000 / 1999 → 1999 × 5 + 5`
 - Generates standard UPI URIs (`upi://pay?pa=…&pn=…&am=…&cu=INR&tn=…`) + QR codes fully client-side
 - Download branded PNGs, copy UPI links, Share / Share All (Web Share API), Print All, Download All
+- Payer checklist: one `#p=` link shows all parts with pay buttons + manual ticks (ticks are not receipts)
 - Mobile-first, PWA installable, offline-capable, print stylesheet
 
 ## Tests

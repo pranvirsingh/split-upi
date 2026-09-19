@@ -3,6 +3,7 @@ import QRCodeCard from './QRCodeCard';
 import { formatINR } from '../lib/format';
 import { buildUpiUri } from '../lib/upi';
 import { previewLine } from '../lib/profiles';
+import { payViewUrl } from '../lib/payview';
 import { isNative, shareMultipleImages } from '../lib/native';
 import { copyText, downloadBrandedQr, shareText } from '../lib/download';
 
@@ -163,6 +164,23 @@ export default function PaymentSummary({ generated, total, maxPerQr, upiId, rece
             className="rounded-md border border-white/10 bg-white/5 px-2.5 py-1.5 font-mono text-[11px] font-bold text-mist transition hover:border-gold/50 hover:text-gold active:scale-95"
           >
             ⧉
+          </button>
+          <button
+            onClick={async () => {
+              const link = payViewUrl({
+                v: 1,
+                pa: upiId,
+                pn: receiverName,
+                tn: note.trim(),
+                parts: generated.map((g) => g.amount),
+              });
+              const ok = await copyText(link);
+              alert(ok ? 'Payer link copied — one link covers all parts.' : 'Copy failed on this device.');
+            }}
+            title="Payer Link"
+            className="rounded-md border border-gold/50 bg-gold/10 px-2.5 py-1.5 font-mono text-[11px] font-bold text-gold transition hover:bg-gold/20 active:scale-95"
+          >
+            🔗
           </button>
         </span>
       </div>
