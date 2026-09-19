@@ -29,6 +29,8 @@ npm run preview
 - Generates standard UPI URIs (`upi://pay?pa=…&pn=…&am=…&cu=INR&tn=…`) + QR codes fully client-side
 - Download branded PNGs, copy UPI links, Share / Share All (Web Share API), Print All, Download All
 - Payer checklist: one `#p=` link shows all parts with pay buttons + manual ticks (ticks are not receipts)
+- Shares always use tappable `https://` links; in-app links use the canonical site URL (never localhost)
+- In-app update banner when a newer GitHub release exists; brand mark in header, icons, splash, favicon
 - Mobile-first, PWA installable, offline-capable, print stylesheet
 
 ## Tests

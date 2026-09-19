@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { buildUpiUri } from '../lib/upi';
+import { payViewUrl } from '../lib/payview';
 import { formatINR } from '../lib/format';
 import { copyText, downloadBrandedQr, qrDataUrl, shareText } from '../lib/download';
 
@@ -59,7 +60,10 @@ export default function QRCodeCard({ index, total, amount, upiId, receiverName, 
           <button
             onClick={async () => {
               const r = await downloadBrandedQr({ index, total, amount, upiId, receiverName, note, uri });
-              flash(r === 'failed' ? 'failed' : r === 'shared' ? 'shared' : 'PNG downloaded');
+              if (r === 'failed') {
+                alert('Could not save the QR on this device. Try Share instead.');
+                flash('failed');
+              } else flash(r === 'shared' ? 'shared' : 'PNG downloaded');
             }}
             className="rounded-md bg-gold px-2 py-2 font-mono text-[11.5px] font-bold text-night transition hover:brightness-110 active:scale-95"
           >
@@ -67,11 +71,13 @@ export default function QRCodeCard({ index, total, amount, upiId, receiverName, 
           </button>
           <button
             onClick={async () => {
+              // Tappable https link (raw upi:// text is not clickable in chat apps).
+              const link = payViewUrl({ v: 1, pa: upiId, pn: receiverName, tn: note.trim(), parts: [amount] });
               const r = await shareText(
-                `SplitUPI Payment ${index + 1} of ${total}`,
-                `Pay ₹${formatINR(amount)} to ${receiverName} (${upiId}): ${uri}`,
+                `SplitUPI Payment ${index + 1} of ${total} — ₹${formatINR(amount)}`,
+                `Pay ₹${formatINR(amount)} to ${receiverName}: ${link}`,
               );
-              flash(r === 'shared' ? 'shared' : r === 'copied' ? 'copied' : 'n/a');
+              flash(r === 'shared' ? 'shared' : r === 'copied' ? 'link copied' : 'share not supported');
             }}
             className="rounded-md border border-white/10 bg-white/5 px-2 py-2 font-mono text-[11.5px] font-bold text-mist transition hover:border-gold/50 hover:text-gold active:scale-95"
           >

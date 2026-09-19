@@ -13,6 +13,7 @@ import { formatINR } from './lib/format';
 import { isNative } from './lib/native';
 import { splitAmount } from './lib/split';
 import { suggestMaxForFewParts } from './lib/profiles';
+import { checkForUpdate, type UpdateInfo } from './lib/update';
 
 function Dots() {
   return (
@@ -36,6 +37,10 @@ export default function App() {
   const [generated, setGenerated] = useState<GeneratedPayment[] | null>(null);
   const [generating, setGenerating] = useState(false);
   const [payState, setPayState] = useState(() => decodePayView(window.location.hash));
+  const [update, setUpdate] = useState<UpdateInfo | null>(null);
+  useEffect(() => {
+    checkForUpdate().then(setUpdate).catch(() => {});
+  }, []);
   useEffect(() => {
     const onHash = () => setPayState(decodePayView(window.location.hash));
     window.addEventListener('hashchange', onHash);
@@ -125,7 +130,15 @@ export default function App() {
 
   return (
     <div id="top" className="min-h-screen bg-night text-mist">
-      <Header onGenerate={scrollToForm} />
+      <Header onGenerate={scrollToForm} hasUpdate={!!update} />
+      {update && (
+        <a
+          href={update.url}
+          className="no-print block bg-gold px-4 py-2 text-center font-mono text-[12px] font-bold text-night transition hover:brightness-110"
+        >
+          {update.latest} available — update for new features →
+        </a>
+      )}
 
       {!isNative() && (
       <>

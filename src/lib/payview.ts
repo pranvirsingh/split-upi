@@ -1,4 +1,5 @@
-import { MAX_QR_COUNT, MAX_TOTAL_AMOUNT } from './constants';
+import { MAX_QR_COUNT, MAX_TOTAL_AMOUNT, SITE_URL } from './constants';
+import { isNative } from './native';
 import { isValidUpiId } from './validation';
 
 export interface PayViewState {
@@ -49,7 +50,9 @@ export function decodePayView(hash: string): PayViewState | null {
   }
 }
 
-/** Full shareable URL for the current page. */
-export function payViewUrl(state: PayViewState): string {
-  return `${window.location.origin}${window.location.pathname}#p=${encodePayView(state)}`;
+/** Full shareable URL. Explicit base (tests) or auto: canonical site URL inside the app shell. */
+export function payViewUrl(state: PayViewState, base?: string): string {
+  const root =
+    base ?? (isNative() ? SITE_URL : `${window.location.origin}${window.location.pathname}`);
+  return `${root}#p=${encodePayView(state)}`;
 }
