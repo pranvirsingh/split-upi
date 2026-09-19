@@ -17,6 +17,13 @@ jobs:
           cache: npm
 
       - run: npm ci
+
+      - name: Mobile install + typecheck
+        working-directory: mobile
+        run: |
+          npm ci
+          npm run typecheck
+
       - run: npm run test:logic
       - run: npm test
       - run: npm run build

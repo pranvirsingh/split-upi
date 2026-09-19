@@ -4,10 +4,11 @@ import { APP_VERSION } from '../lib/update';
 function Mark({ size = 32 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 64 64" aria-hidden>
-      <rect width="64" height="64" rx="14" fill="#173b2e" />
-      <rect x="7" y="7" width="50" height="50" rx="10" fill="none" stroke="#d3a62c" strokeWidth="2.5" />
-      <text x="32" y="44" fontFamily="Arial, sans-serif" fontSize="34" fontWeight="bold" fill="#d3a62c" textAnchor="middle">S</text>
-      <rect x="37" y="19" width="2.5" height="26" fill="#173b2e" />
+      <rect width="64" height="64" rx="14" fill="#133026" />
+      <rect x="17" y="17" width="13" height="13" rx="3" fill="#ece7d9" />
+      <rect x="34" y="17" width="13" height="13" rx="3" fill="#ece7d9" />
+      <rect x="17" y="34" width="13" height="13" rx="3" fill="#ece7d9" />
+      <rect x="35.5" y="35.5" width="13" height="13" rx="3" fill="#d3a62c" />
     </svg>
   );
 }

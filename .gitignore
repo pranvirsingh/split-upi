@@ -10,3 +10,8 @@ android/build/
 android/.gradle/
 android/local.properties
 android/*.iml
+# React Native (regenerable)
+mobile/android/app/build/
+mobile/android/build/
+mobile/android/.gradle/
+mobile/android/local.properties
