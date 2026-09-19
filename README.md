@@ -44,11 +44,10 @@ Covers all required cases from the spec (splitting, rounding, validation, URI ge
 
 ## Mobile (Android)
 
-Same web code, wrapped with Capacitor (`app.splitupi`).
+Two apps ship from this repo:
 
-- App shows the generator only — no marketing sections.
-- QR PNGs save/share through the native system sheet.
-- Debug APK is built in CI on every version tag and attached to the GitHub Release.
+- **Native (React Native, `mobile/`, from v1.8):** real native generator screen, same exact-split engine (parity-tested). APK `splitupi-native-vX.apk` builds in CI per tag.
+- **Wrapper (Capacitor, `android/`):** the website as an installable shell. APK `splitupi-vX.apk` per tag.
 - Privacy policy: `/privacy.html` (linked in-app, needed for Play Store later).
 
 ## CI/CD
