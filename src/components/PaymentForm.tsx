@@ -1,5 +1,14 @@
+import { useEffect, useState } from 'react';
 import type { PaymentInputs, ValidationResult } from '../lib/validation';
+import { isValidUpiId } from '../lib/validation';
 import AmountPreset from './AmountPreset';
+import {
+  deleteProfile,
+  getDefaultProfile,
+  loadProfiles,
+  saveProfile,
+  type ReceiverProfile,
+} from '../lib/profiles';
 
 interface Props {
   inputs: PaymentInputs;
@@ -26,6 +35,49 @@ export default function PaymentForm({ inputs, setInputs, validation, onGenerate 
     setInputs({ ...inputs, [k]: e.target.value });
 
   const err = validation && !validation.ok ? validation.errors : {};
+  const [profiles, setProfiles] = useState<ReceiverProfile[]>([]);
+  const [hint, setHint] = useState('');
+
+  // Once: load saved receivers, prefill the default if the form is untouched.
+  useEffect(() => {
+    const all = loadProfiles();
+    setProfiles(all);
+    const d = getDefaultProfile();
+    if (d && inputs.upiId.trim() === '' && inputs.receiverName.trim() === '') {
+      setInputs({ upiId: d.upiId, receiverName: d.name, totalAmount: inputs.totalAmount, maxPerQr: d.maxPerQr, note: d.note });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const applyProfile = (id: string) => {
+    const p = profiles.find((x) => x.id === id);
+    if (!p) return;
+    setHint('');
+    setInputs({ ...inputs, upiId: p.upiId, receiverName: p.name, maxPerQr: p.maxPerQr, note: p.note });
+  };
+
+  const onSave = () => {
+    if (!isValidUpiId(inputs.upiId) || inputs.receiverName.trim().length < 2) {
+      setHint('need valid id + name to save');
+      return;
+    }
+    setHint('');
+    setProfiles(
+      saveProfile({
+        upiId: inputs.upiId,
+        name: inputs.receiverName,
+        maxPerQr: inputs.maxPerQr,
+        note: inputs.note,
+      }),
+    );
+  };
+
+  const onDelete = (id: string) => {
+    setProfiles(deleteProfile(id));
+  };
+
+  const selectedId = profiles.find((p) => p.upiId.toLowerCase() === inputs.upiId.trim().toLowerCase())?.id ?? '';
+
   const inputCls = (bad?: string) =>
     `w-full rounded-lg border bg-night px-4 py-2.5 font-mono text-[14px] text-mist outline-none transition placeholder:text-faint/50 focus:ring-2 ${
       bad
@@ -35,6 +87,46 @@ export default function PaymentForm({ inputs, setInputs, validation, onGenerate 
 
   return (
     <div className="space-y-4">
+      <div className="flex items-center gap-1.5">
+        <span className="font-mono text-[12px] font-bold text-gold">[@]</span>
+        {profiles.length > 0 ? (
+          <select
+            aria-label="Saved receivers"
+            value={selectedId}
+            onChange={(e) => applyProfile(e.target.value)}
+            className="min-w-0 flex-1 rounded-md border border-white/10 bg-night px-2 py-1.5 font-mono text-[12px] text-mist outline-none focus:border-gold/60"
+          >
+            <option value="">saved receivers…</option>
+            {profiles.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.upiId}{p.isDefault ? ' (default)' : ''}
+              </option>
+            ))}
+          </select>
+        ) : (
+          <span className="font-mono text-[11px] text-faint">no saved receivers yet</span>
+        )}
+        <button
+          type="button"
+          onClick={onSave}
+          title="Save receiver"
+          className="shrink-0 rounded-md border border-gold/50 bg-gold/10 px-2.5 py-1.5 font-mono text-[11px] font-bold text-gold transition hover:bg-gold/20 active:scale-95"
+        >
+          save
+        </button>
+        {selectedId && (
+          <button
+            type="button"
+            onClick={() => onDelete(selectedId)}
+            title="Delete receiver"
+            className="shrink-0 rounded-md border border-white/10 px-2 py-1.5 font-mono text-[11px] text-faint transition hover:border-rose-500/50 hover:text-rose-400 active:scale-95"
+          >
+            x
+          </button>
+        )}
+      </div>
+      {hint && <p className="-mt-2 font-mono text-[11px] text-gold">{hint}</p>}
+
       <div>
         <Label htmlFor="upiId">upi_id</Label>
         <input
@@ -42,7 +134,7 @@ export default function PaymentForm({ inputs, setInputs, validation, onGenerate 
           inputMode="email"
           autoComplete="off"
           spellCheck={false}
-          placeholder="name@upi"
+          placeholder="example@upi"
           value={inputs.upiId}
           onChange={set('upiId')}
           onKeyDown={(e) => e.key === 'Enter' && onGenerate()}
@@ -56,7 +148,7 @@ export default function PaymentForm({ inputs, setInputs, validation, onGenerate 
         <input
           id="rname"
           autoComplete="off"
-          placeholder="Mohit Kumar"
+          placeholder="Example Name"
           value={inputs.receiverName}
           onChange={set('receiverName')}
           onKeyDown={(e) => e.key === 'Enter' && onGenerate()}

@@ -2,12 +2,21 @@ import { useState } from 'react';
 import QRCodeCard from './QRCodeCard';
 import { formatINR } from '../lib/format';
 import { buildUpiUri } from '../lib/upi';
+import { previewLine } from '../lib/profiles';
+import { isNative, shareMultipleImages } from '../lib/native';
 import { copyText, downloadBrandedQr, shareText } from '../lib/download';
 
 export interface GeneratedPayment {
   amount: number;
   uri: string;
   qr: string;
+}
+
+export interface SplitPreview {
+  parts: number[];
+  total: number;
+  max: number;
+  suggestion: { max: number; parts: number[] } | null;
 }
 
 interface Props {
@@ -17,21 +26,47 @@ interface Props {
   upiId: string;
   receiverName: string;
   note: string;
+  preview: SplitPreview | null;
+  onApplyMax: (max: number) => void;
 }
 
-export default function PaymentSummary({ generated, total, maxPerQr, upiId, receiverName, note }: Props) {
+export default function PaymentSummary({ generated, total, maxPerQr, upiId, receiverName, note, preview, onApplyMax }: Props) {
   const [busy, setBusy] = useState<string>('');
 
   if (!generated || total === null || maxPerQr === null) {
     return (
-      <div className="grid place-items-center px-6 py-12 text-center">
-        <div className="max-w-xs">
-          <p className="font-mono text-[13px] text-faint">
-            <span className="text-gold">$</span> <span className="caret">awaiting input</span>
-          </p>
-          <p className="mt-3 font-mono text-[11.5px] leading-relaxed text-faint/70">
-            4500 ÷ 1999 → 1,999 + 1,999 + 502
-          </p>
+      <div className="grid place-items-center px-6 py-10 text-center">
+        <div className="w-full max-w-sm">
+          {preview ? (
+            <>
+              <p className="font-mono text-[11px] text-faint">$ preview — live</p>
+              <p className="mt-2 font-mono text-[14px] text-mist">-&gt; {previewLine(preview.parts, formatINR)}</p>
+              <p className="mt-1 font-mono text-[11.5px] text-faint">
+                = {preview.parts.length} pkts · ₹{formatINR(preview.total)}
+              </p>
+              {preview.suggestion && (
+                <button
+                  onClick={() => onApplyMax(preview.suggestion!.max)}
+                  className="mt-3 rounded-md border border-gold/50 bg-gold/10 px-3 py-2 font-mono text-[11.5px] font-bold text-gold transition hover:bg-gold/20 active:scale-95"
+                >
+                  ! {preview.parts.length} pkts is payer-heavy — max {formatINR(preview.suggestion.max)} -&gt;{' '}
+                  {preview.suggestion.parts.length} pkts · apply
+                </button>
+              )}
+              {preview.parts.some((p) => p <= 1000) && (
+                <p className="mt-2 font-mono text-[10.5px] text-faint/70">small parts can go PIN-less on payer UPI Lite</p>
+              )}
+            </>
+          ) : (
+            <>
+              <p className="font-mono text-[13px] text-faint">
+                <span className="text-gold">$</span> <span className="caret">awaiting input</span>
+              </p>
+              <p className="mt-3 font-mono text-[11.5px] leading-relaxed text-faint/70">
+                4500 ÷ 1999 → 1,999 + 1,999 + 502
+              </p>
+            </>
+          )}
         </div>
       </div>
     );
@@ -66,6 +101,22 @@ export default function PaymentSummary({ generated, total, maxPerQr, upiId, rece
           </button>
           <button
             onClick={async () => {
+              if (isNative()) {
+                // One system sheet with every QR — anchor downloads don't work in the app shell.
+                setBusy('downloading');
+                try {
+                  const r = await shareMultipleImages(
+                    generated.map((g, i) => ({
+                      dataUrl: g.qr,
+                      filename: `splitupi-${i + 1}-of-${generated.length}.png`,
+                    })),
+                  );
+                  if (r === 'failed') alert('Share failed on this device.');
+                } finally {
+                  setBusy('');
+                }
+                return;
+              }
               setBusy('downloading');
               try {
                 for (let i = 0; i < generated.length; i++) {
