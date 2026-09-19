@@ -63,13 +63,13 @@ console.log('validation cases:');
 assert.throws(() => splitAmount(0, 1999), /greater than 0/, '0 amount throws');
 console.log('  ✓ 0 amount = validation error'); pass++;
 assert.strictEqual(isValidUpiId('not-an-upi'), false, 'invalid upi rejected');
-assert.strictEqual(isValidUpiId('mohit@upi'), true, 'valid upi accepted');
+assert.strictEqual(isValidUpiId('example@upi'), true, 'valid upi accepted');
 assert.strictEqual(isValidUpiId('98xxxxxx@okhdfc'), true, 'bank handle accepted');
 console.log('  ✓ Invalid UPI ID = validation error'); pass++;
 
 console.log('UPI URI cases:');
-const uri = buildUpiUri({ upiId: 'mohit@upi', receiverName: 'Mohit Kumar', amount: 1999, note: 'Invoice 001' });
-const expected = 'upi://pay?pa=mohit@upi&pn=Mohit%20Kumar&am=1999.00&cu=INR&tn=Invoice%20001';
+const uri = buildUpiUri({ upiId: 'example@upi', receiverName: 'Example Name', amount: 1999, note: 'Invoice 001' });
+const expected = 'upi://pay?pa=example@upi&pn=Example%20Name&am=1999.00&cu=INR&tn=Invoice%20001';
 assert.strictEqual(uri, expected, 'URI matches spec structure');
 console.log(`  ✓ URI: ${uri}`); pass++;
 const uri2 = buildUpiUri({ upiId: 'a@upi', receiverName: 'A B', amount: 502, note: '' });

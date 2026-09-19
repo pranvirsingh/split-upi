@@ -9,6 +9,8 @@ import { buildUpiUri } from './lib/upi';
 import { qrDataUrl } from './lib/download';
 import { formatINR } from './lib/format';
 import { isNative } from './lib/native';
+import { splitAmount } from './lib/split';
+import { suggestMaxForFewParts } from './lib/profiles';
 
 function Dots() {
   return (
@@ -38,6 +40,29 @@ export default function App() {
     if (!generated) return null;
     return generated.reduce((a, g) => a + g.amount, 0);
   }, [generated]);
+
+  // Live preview while typing — quiet validation, no error display.
+  // Guarded to sane ranges so pathological inputs can't stall keystrokes.
+  const preview = useMemo(() => {
+    const t = Number(inputs.totalAmount.replace(/,/g, ''));
+    const m = Number(inputs.maxPerQr.replace(/,/g, ''));
+    if (!Number.isFinite(t) || !Number.isFinite(m) || t <= 0 || m < 1 || t > 1000000) return null;
+    const v = validateInputs(inputs);
+    if (!v.ok || !v.parts || v.total === undefined || v.max === undefined) return null;
+    let suggestion: { max: number; parts: number[] } | null = null;
+    if (v.parts.length >= 5) {
+      const max = suggestMaxForFewParts(v.total);
+      if (max > v.max) {
+        try {
+          const sp = splitAmount(v.total, max);
+          if (sp.length < v.parts.length) suggestion = { max, parts: sp };
+        } catch {
+          /* ignore */
+        }
+      }
+    }
+    return { parts: v.parts, total: v.total, max: v.max, suggestion };
+  }, [inputs]);
 
   const handleGenerate = useCallback(async () => {
     const v = validateInputs(inputs);
@@ -155,6 +180,8 @@ export default function App() {
                   upiId={inputs.upiId.trim()}
                   receiverName={inputs.receiverName.trim()}
                   note={inputs.note}
+                  preview={preview}
+                  onApplyMax={(max) => setInputs({ ...inputs, maxPerQr: String(max) })}
                 />
               </div>
             </div>

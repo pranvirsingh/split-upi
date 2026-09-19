@@ -17,8 +17,8 @@ describe('QR integrity — decoded payload equals the exact UPI URI', () => {
   for (const amount of splitAmount(4500, 1999)) {
     it(`₹${amount} QR decodes to its own URI`, async () => {
       const uri = buildUpiUri({
-        upiId: 'mohit@upi',
-        receiverName: 'Mohit Kumar',
+        upiId: 'example@upi',
+        receiverName: 'Example Name',
         amount,
         note: 'Invoice 001',
       });

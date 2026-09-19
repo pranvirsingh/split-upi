@@ -12,8 +12,8 @@ describe('formatUpiAmount', () => {
 describe('buildUpiUri', () => {
   it('matches the canonical spec example', () => {
     expect(
-      buildUpiUri({ upiId: 'mohit@upi', receiverName: 'Mohit Kumar', amount: 1999, note: 'Invoice 001' }),
-    ).toBe('upi://pay?pa=mohit@upi&pn=Mohit%20Kumar&am=1999.00&cu=INR&tn=Invoice%20001');
+      buildUpiUri({ upiId: 'example@upi', receiverName: 'Example Name', amount: 1999, note: 'Invoice 001' }),
+    ).toBe('upi://pay?pa=example@upi&pn=Example%20Name&am=1999.00&cu=INR&tn=Invoice%20001');
   });
   it('omits tn when the note is empty', () => {
     const uri = buildUpiUri({ upiId: 'a@upi', receiverName: 'A B', amount: 502, note: '' });

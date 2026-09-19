@@ -2,15 +2,15 @@ import { describe, expect, it } from 'vitest';
 import { isValidUpiId, validateInputs, type PaymentInputs } from '../src/lib/validation';
 
 const good: PaymentInputs = {
-  upiId: 'mohit@upi',
-  receiverName: 'Mohit Kumar',
+  upiId: 'example@upi',
+  receiverName: 'Example Name',
   totalAmount: '4500',
   maxPerQr: '1999',
   note: 'Invoice 001',
 };
 
 describe('isValidUpiId', () => {
-  it.each(['mohit@upi', '98xxxxxx@okhdfc', 'name.surname@okaxis', 'ab@cd'])('accepts %s', (v) => {
+  it.each(['example@upi', '98xxxxxx@okhdfc', 'name.surname@okaxis', 'ab@cd'])('accepts %s', (v) => {
     expect(isValidUpiId(v)).toBe(true);
   });
   it.each(['', 'no-at-sign', 'a@b', 'two@@upi', 'has space@upi', '@upi', 'x@'])('rejects %s', (v) => {
