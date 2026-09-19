@@ -3,6 +3,10 @@ export const MAX_QR_COUNT = 50; // safety limit
 export const DEFAULT_MAX_PER_QR = 1999;
 export const MIN_AMOUNT = 0.01;
 
+/** Canonical public URL — the app shell runs on localhost, so links must use this. */
+export const SITE_URL = 'https://split-upi-ochre.vercel.app';
+export const RELEASES_URL = 'https://github.com/pranvirsingh/split-upi/releases';
+
 export const PRESETS = [499, 999, 1999, 4999] as const;
 
 export const DISCLAIMER_TEXT =

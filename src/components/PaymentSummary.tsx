@@ -145,8 +145,18 @@ export default function PaymentSummary({ generated, total, maxPerQr, upiId, rece
           </button>
           <button
             onClick={async () => {
-              const r = await shareText('SplitUPI payment summary', shareAllText());
-              if (r === 'copied') alert('Payment summary copied to clipboard.');
+              const link = payViewUrl({
+                v: 1,
+                pa: upiId,
+                pn: receiverName,
+                tn: note.trim(),
+                parts: generated.map((g) => g.amount),
+              });
+              const r = await shareText(
+                `SplitUPI collection — ₹${formatINR(total)} in ${generated.length} parts`,
+                `Pay ${generated.length} parts (total ₹${formatINR(total)}) to ${receiverName}: ${link}`,
+              );
+              if (r === 'copied') alert('Payer link copied to clipboard.');
               else if (r === 'unsupported') alert('Sharing is not supported on this device.');
             }}
             title="Share All"
