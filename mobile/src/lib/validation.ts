@@ -62,6 +62,8 @@ export function validateInputs(inputs: PaymentInputs): ValidationResult {
     errors.maxPerQr = 'Max 2 decimals.';
   } else if ((max as number) <= 0) {
     errors.maxPerQr = 'Must be more than Rs.0.';
+  } else if ((max as number) > MAX_TOTAL_AMOUNT) {
+    errors.maxPerQr = 'Amount too large.';
   }
 
   if (Object.keys(errors).length > 0) return { ok: false, errors };
