@@ -45,6 +45,10 @@ jobs:
       - name: Build debug APK
         run: |
           export ANDROID_HOME=$ANDROID_SDK_ROOT
+          VERSION_NAME="${TAG#v}"
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION_NAME"
+          export ANDROID_VERSION_NAME="$VERSION_NAME"
+          export ANDROID_VERSION_CODE=$(( (MAJOR * 10000) + (MINOR * 100) + PATCH ))
           chmod +x android/gradlew
           cd android && ./gradlew assembleDebug --no-daemon
 

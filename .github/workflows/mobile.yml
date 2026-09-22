@@ -1,6 +1,6 @@
 name: Native Android
 
-# Builds the React Native debug APK and attaches it to the version release.
+# Builds the React Native release APK, store-signed, and attaches it to the version release.
 on:
   push:
     tags: ['v*']
@@ -44,8 +44,19 @@ jobs:
 
       - run: npm ci
       - run: npm run typecheck
+      - run: npm test -- --ci
+
+      - name: Decode release keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/splitupi-release.jks"
 
       - name: Build native release APKs (per architecture)
+        env:
+          ANDROID_KEYSTORE_PATH: ${{ runner.temp }}/splitupi-release.jks
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
           export ANDROID_HOME=$ANDROID_SDK_ROOT
           chmod +x android/gradlew
