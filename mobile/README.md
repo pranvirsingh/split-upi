@@ -95,3 +95,23 @@ To learn more about React Native, take a look at the following resources:
 - [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
 - [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
 - [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+
+# Release signing
+
+CI signs release APKs with the real production keystore via repo secrets
+(`ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`,
+`ANDROID_KEY_PASSWORD`) — see `.github/workflows/mobile.yml`. The keystore
+itself is never committed; only its owner holds a copy.
+
+To build a store-signed release locally, set before running
+`./gradlew assembleRelease`:
+
+```sh
+export ANDROID_KEYSTORE_PATH=/path/to/splitupi-release.jks
+export ANDROID_KEYSTORE_PASSWORD=...
+export ANDROID_KEY_ALIAS=splitupi
+export ANDROID_KEY_PASSWORD=...
+```
+
+Without these set, `assembleRelease` still works but falls back to the
+shared debug key (fine for local testing, not for distribution).
