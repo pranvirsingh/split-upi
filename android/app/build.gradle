@@ -9,7 +9,8 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         // CI sets these from the pushed release tag (see .github/workflows/android.yml)
         // so this actually bumps per release instead of sitting at 1/1.0 forever.
-        versionCode (System.getenv("ANDROID_VERSION_CODE") ?: "1") as Integer
+        def envVersionCode = System.getenv("ANDROID_VERSION_CODE")
+        versionCode envVersionCode ? envVersionCode.toInteger() : 1
         versionName System.getenv("ANDROID_VERSION_NAME") ?: "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
