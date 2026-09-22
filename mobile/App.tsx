@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
   Alert,
   Linking,
+  Platform,
+  PermissionsAndroid,
   Pressable,
   ScrollView,
   Share,
@@ -171,6 +173,30 @@ export default function App() {
     }
   };
 
+  const hasGallerySavePermission = async () => {
+    if (Platform.OS !== 'android') return true;
+    const checkPromise =
+      Platform.Version >= 33
+        ? Promise.all([
+            PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES),
+            PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_MEDIA_VIDEO),
+          ]).then(([images, video]) => images && video)
+        : PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
+    if (await checkPromise) return true;
+    if (Platform.Version >= 33) {
+      const statuses = await PermissionsAndroid.requestMultiple([
+        PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES,
+        PermissionsAndroid.PERMISSIONS.READ_MEDIA_VIDEO,
+      ]);
+      return (
+        statuses[PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES] === PermissionsAndroid.RESULTS.GRANTED &&
+        statuses[PermissionsAndroid.PERMISSIONS.READ_MEDIA_VIDEO] === PermissionsAndroid.RESULTS.GRANTED
+      );
+    }
+    const status = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
+    return status === PermissionsAndroid.RESULTS.GRANTED;
+  };
+
   const saveQR = (i: number) => {
     const ref = qrRefs.current[i];
     if (!ref) {
@@ -179,6 +205,10 @@ export default function App() {
     }
     ref.toDataURL(async (b64: string) => {
       try {
+        if (!(await hasGallerySavePermission())) {
+          Alert.alert('SplitUPI', 'Photo permission needed to save. Try Share instead.');
+          return;
+        }
         if (!b64 || b64.length < 5000) throw new Error('bad png');
         const path = `${RNFS.CachesDirectoryPath}/splitupi-${Date.now()}-${i}.png`;
         await RNFS.writeFile(path, b64, 'base64');

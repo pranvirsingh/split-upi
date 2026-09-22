@@ -94,7 +94,7 @@ export async function downloadBrandedQr(card: QrCardData): Promise<'saved' | 'sh
   // QR box
   y += 44;
   const boxY = y;
-  const boxH = 660;
+  const boxH = 740;
   ctx.fillStyle = '#ffffff';
   ctx.strokeStyle = '#e5e7eb';
   ctx.lineWidth = 3;
