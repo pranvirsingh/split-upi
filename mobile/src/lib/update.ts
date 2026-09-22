@@ -23,7 +23,7 @@ export async function checkForUpdate(): Promise<UpdateInfo | null> {
   try {
     const ctrl = new AbortController();
     const timer = setTimeout(() => ctrl.abort(), 8000);
-    const res = await fetch('https://api.github.com/pranvirsingh/split-upi/releases/latest', {
+    const res = await fetch('https://api.github.com/repos/pranvirsingh/split-upi/releases/latest', {
       signal: ctrl.signal,
       headers: { Accept: 'application/vnd.github+json' },
     });
