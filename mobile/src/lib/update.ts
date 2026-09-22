@@ -20,14 +20,13 @@ export interface UpdateInfo {
 }
 
 export async function checkForUpdate(): Promise<UpdateInfo | null> {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 8000);
   try {
-    const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 8000);
     const res = await fetch('https://api.github.com/repos/pranvirsingh/split-upi/releases/latest', {
       signal: ctrl.signal,
       headers: { Accept: 'application/vnd.github+json' },
     });
-    clearTimeout(timer);
     if (!res.ok) return null;
     const j = (await res.json()) as { tag_name?: string; html_url?: string };
     const latest = String(j.tag_name ?? '');
@@ -36,5 +35,7 @@ export async function checkForUpdate(): Promise<UpdateInfo | null> {
     return { latest, url: j.html_url || 'https://github.com/pranvirsingh/split-upi/releases' };
   } catch {
     return null;
+  } finally {
+    clearTimeout(timer);
   }
 }
